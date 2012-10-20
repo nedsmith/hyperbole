@@ -3,6 +3,8 @@
  */
 package display;
 
+import hyperbolic.HyperbolicPoint;
+
 /**
  * @author Ned
  *
@@ -10,5 +12,7 @@ package display;
 public interface HyperbolicTessellation {
 
 	HyperbolicLineSet makeLineSet();
+	
+	HyperbolicLineSet makeLineSetNear(HyperbolicPoint position);
 	
 }

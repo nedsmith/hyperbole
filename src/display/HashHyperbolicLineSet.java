@@ -31,4 +31,10 @@ public final class HashHyperbolicLineSet implements HyperbolicLineSet {
 		return new HashSet<HyperbolicLine>(lines);
 	}
 
+	@Override
+	public void setLines(Set<HyperbolicLine> lines) {
+		this.lines.clear();
+		this.lines.addAll(lines);
+	}
+
 }

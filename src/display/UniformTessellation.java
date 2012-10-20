@@ -37,7 +37,12 @@ public final class UniformTessellation implements HyperbolicTessellation {
 	
 	@Override
 	public HyperbolicLineSet makeLineSet() {
-		vertices.add(motionGenerator.identity());
+		return makeLinesFrom(motionGenerator.identity());
+	}
+	
+	private HyperbolicLineSet makeLinesFrom(HyperbolicRigidMotion startPosition) {
+		lineSet.clearLines();
+		vertices.add(startPosition);
 		for (int i=0; i<levels; i++) {
 			expandVerticies();
 			System.out.println(numVertices);
@@ -75,6 +80,26 @@ public final class UniformTessellation implements HyperbolicTessellation {
 			lineSet.addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
 		}
 		return positionAndDirection;
+	}
+
+	@Override
+	public HyperbolicLineSet makeLineSetNear(HyperbolicPoint position) {
+		double minDistance = Double.MAX_VALUE;
+		HyperbolicRigidMotion closestVertex = null;
+		for (HyperbolicRigidMotion vertex : vertices) {
+			HyperbolicPoint transform = vertex.inverse().transform(position);
+			double[] diskPosition = transform.getDiskPosition();
+			double distance = 
+					diskPosition[0]*diskPosition[0]+diskPosition[1]*diskPosition[1];
+			if (distance < minDistance) {
+				minDistance = distance;
+				closestVertex = vertex;
+			}
+			
+		}
+		vertices.clear();
+		numVertices = 0;
+		return makeLinesFrom(closestVertex);
 	}
 
 }

@@ -18,5 +18,7 @@ public interface HyperbolicLineSet {
 	void clearLines();
 	
 	Set<HyperbolicLine> getLines();
+	
+	void setLines(Set<HyperbolicLine> lines);
 
 }

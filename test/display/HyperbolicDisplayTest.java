@@ -5,6 +5,7 @@ import java.awt.Color;
 import gui.DisplayFrame;
 import hyperbolic.HalfPlaneMotionGenerator;
 import hyperbolic.HalfPlanePointGenerator;
+import hyperbolic.HyperbolicLine;
 import hyperbolic.HyperbolicPoint;
 import hyperbolic.HyperbolicPointGenerator;
 import hyperbolic.HyperbolicRigidMotion;
@@ -24,9 +25,9 @@ public class HyperbolicDisplayTest {
 	
 	private HyperbolicRigidMotion positionAndDirection = motionGenerator.identity();
 	private HyperbolicRigidMotion turns = motionGenerator.identity();
-	private double turnFactor = 0.01;
+	private double turnFactor = 0.001;
 	private double currentTurn = 0;
-	private double maxTurn = 0.06;
+	private double maxTurn = 0.01;
 	
 	@Test
 	public void runTest() {
@@ -61,7 +62,10 @@ public class HyperbolicDisplayTest {
 			HyperbolicPoint newPosition = positionAndDirection.transform(pointGenerator.diskCenter());
 			
 			trail.getLineSet().addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
-			
+			if (counter%50==0) {
+				HyperbolicLineSet newLines = tessellation.makeLineSetNear(currentPosition);
+				tessellationLines.setLines(newLines.getLines());
+			}
 
 			turns = turns.composeWith(turn);
 			HyperbolicRigidMotion cameraAngle = positionAndDirection.composeWith(turns.inverse());
