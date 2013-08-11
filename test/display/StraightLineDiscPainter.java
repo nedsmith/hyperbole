@@ -7,7 +7,7 @@ import hyperbolic.HyperbolicLine;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * @author Ned
@@ -38,7 +38,7 @@ public class StraightLineDiscPainter implements HyperbolicPainter {
 		
 		for (HyperbolicLineDrawing drawing : picture.getTransformedDrawings()) {
 			g.setColor(drawing.getColor());
-			Set<HyperbolicLine> lines = drawing.getLineSet().getLines();
+			Collection<HyperbolicLine> lines = drawing.getLineSet().getLines();
 			for (HyperbolicLine line : lines) {
 				double[] start = line.getStartPoint().getDiskPosition();
 				double[] end = line.getEndPoint().getDiskPosition();

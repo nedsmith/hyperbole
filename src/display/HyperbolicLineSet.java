@@ -3,9 +3,9 @@
  */
 package display;
 
-import java.util.Set;
-
 import hyperbolic.HyperbolicLine;
+
+import java.util.Collection;
 
 /**
  * @author Ned
@@ -17,8 +17,8 @@ public interface HyperbolicLineSet {
 
 	void clearLines();
 	
-	Set<HyperbolicLine> getLines();
+	Collection<HyperbolicLine> getLines();
 	
-	void setLines(Set<HyperbolicLine> lines);
+	void setLines(Collection<HyperbolicLine> lines);
 
 }

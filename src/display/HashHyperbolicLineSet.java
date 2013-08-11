@@ -5,6 +5,7 @@ package display;
 
 import hyperbolic.HyperbolicLine;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,7 +33,7 @@ public final class HashHyperbolicLineSet implements HyperbolicLineSet {
 	}
 
 	@Override
-	public void setLines(Set<HyperbolicLine> lines) {
+	public void setLines(Collection<HyperbolicLine> lines) {
 		this.lines.clear();
 		this.lines.addAll(lines);
 	}

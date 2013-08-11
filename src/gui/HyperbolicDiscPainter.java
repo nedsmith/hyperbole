@@ -6,7 +6,7 @@ package gui;
 import hyperbolic.HyperbolicLine;
 
 import java.awt.Color;
-import java.util.Set;
+import java.util.Collection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -43,7 +43,7 @@ public class HyperbolicDiscPainter implements GlPainter {
 	private void paintLineDrawing(HyperbolicLineDrawing drawing) {
 		setColor(drawing.getColor());
 		GL11.glBegin(GL11.GL_LINES);
-		Set<HyperbolicLine> lines = drawing.getLineSet().getLines();
+		Collection<HyperbolicLine> lines = drawing.getLineSet().getLines();
 		for (HyperbolicLine line : lines) {
 			double[] start = line.getStartPoint().getDiskPosition();
 			double[] end = line.getEndPoint().getDiskPosition();
