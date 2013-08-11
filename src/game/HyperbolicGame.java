@@ -74,7 +74,8 @@ public class HyperbolicGame {
 			positionAndDirection = positionAndDirection.composeWith(turn);
 			HyperbolicPoint newPosition = positionAndDirection.transform(pointGenerator.diskCenter());
 			
-			trail.getLineSet().addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
+			if (direction!=0)
+				trail.getLineSet().addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
 			if (counter%50==0) {
 				HyperbolicLineSet newLines = tessellation.makeLineSetNear(currentPosition);
 				tessellationLines.setLines(newLines.getLines());
