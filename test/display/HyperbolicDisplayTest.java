@@ -1,16 +1,15 @@
 package display;
 
-import java.awt.Color;
-
 import gui.DisplayFrame;
 import hyperbolic.HalfPlaneMotionGenerator;
 import hyperbolic.HalfPlanePointGenerator;
-import hyperbolic.HyperbolicLine;
 import hyperbolic.HyperbolicPoint;
 import hyperbolic.HyperbolicPointGenerator;
 import hyperbolic.HyperbolicRigidMotion;
 import hyperbolic.HyperbolicRigidMotionGenerator;
 import hyperbolic.SimpleHyperbolicLine;
+
+import java.awt.Color;
 
 import org.junit.Test;
 
