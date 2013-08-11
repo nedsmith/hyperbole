@@ -26,6 +26,8 @@ import display.UniformTessellation;
  */
 public class HyperbolicView {
 	
+
+	private HyperbolicLineDrawing player = new HyperbolicLineDrawing(Color.blue);
 	private HyperbolicLineDrawing trail = new HyperbolicLineDrawing(Color.red);
 	private HyperbolicPicture picture = new SimpleHyperbolicPicture();
 	
@@ -38,6 +40,11 @@ public class HyperbolicView {
 	private double currentTurn = 0;
 	private int direction = 0;
 	private int counter = 0;
+	private HyperbolicPoint[] playerDrawing = new HyperbolicPoint[] {
+		pointGenerator.disk(0, 0.04),
+		pointGenerator.disk(0.02, -0.02),
+		pointGenerator.disk(-0.02, -0.02),
+	};
 	
 	private HyperbolicTessellation tessellation = new UniformTessellation();
 	private HyperbolicLineSet tessellationLines = tessellation.makeLineSet();
@@ -46,6 +53,7 @@ public class HyperbolicView {
 		HyperbolicLineDrawing tessellationDrawing = new HyperbolicLineDrawing(tessellationLines, Color.green);
 		picture.addLineDrawing(tessellationDrawing);
 		picture.addLineDrawing(trail);
+		picture.addLineDrawing(player);
 	}
 	
 	public void setTurn(double turn) {
@@ -65,6 +73,7 @@ public class HyperbolicView {
 		positionAndDirection = positionAndDirection.composeWith(goForward);
 		positionAndDirection = positionAndDirection.composeWith(turn);
 		HyperbolicPoint newPosition = positionAndDirection.transform(pointGenerator.diskCenter());
+		drawPlayer();
 		
 		if (direction!=0)
 			trail.getLineSet().addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
@@ -78,6 +87,21 @@ public class HyperbolicView {
 		
 		picture.setRigidMotion(cameraAngle.inverse());
 		counter++;
+	}
+	
+	private void drawPlayer() {
+		player.getLineSet().clearLines();
+		int points = playerDrawing.length;
+		for (int i=0; i<points-1; i++) {
+			HyperbolicPoint p1 = positionAndDirection.transform(playerDrawing[i]);
+			HyperbolicPoint p2 = positionAndDirection.transform(playerDrawing[i+1]);
+			SimpleHyperbolicLine line = new SimpleHyperbolicLine(p1, p2);
+			player.getLineSet().addLine(line);
+		}
+		HyperbolicPoint p1 = positionAndDirection.transform(playerDrawing[points-1]);
+		HyperbolicPoint p2 = positionAndDirection.transform(playerDrawing[0]);
+		SimpleHyperbolicLine line = new SimpleHyperbolicLine(p1, p2);
+		player.getLineSet().addLine(line);
 	}
 	
 	public HyperbolicPicture getPicture() {
