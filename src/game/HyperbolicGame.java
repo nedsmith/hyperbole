@@ -47,7 +47,7 @@ public class HyperbolicGame {
 		}
 	}
 	
-	private static final double TURN_FACTOR = 0.05;
+	private static final double TURN_FACTOR = 0.2;
 	
 	private void processInput() {
 		while (Keyboard.next()) {
