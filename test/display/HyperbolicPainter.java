@@ -3,7 +3,6 @@
  */
 package display;
 
-import gui.Painter;
 
 /**
  * @author Ned

@@ -3,7 +3,10 @@
  */
 package gui;
 
+
 import javax.swing.JFrame;
+
+import display.Painter;
 
 /**
  * @author Ned

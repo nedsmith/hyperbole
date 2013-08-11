@@ -5,6 +5,8 @@ import java.awt.Graphics;
 
 import org.junit.Test;
 
+import display.Painter;
+
 public class DisplayTest {
 	
 	private static class MyPainter implements Painter {

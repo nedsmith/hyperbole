@@ -3,9 +3,12 @@
  */
 package gui;
 
+
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
+
+import display.Painter;
 
 /**
  * @author Ned
