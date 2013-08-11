@@ -32,7 +32,7 @@ public final class HyperbolicLineDrawing {
 	 * 
 	 */
 	public HyperbolicLineDrawing() {
-		this(new HashHyperbolicLineSet(),Color.black);
+		this(new ArrayHyperbolicLineSet(),Color.black);
 	}
 
 	/**
@@ -55,7 +55,7 @@ public final class HyperbolicLineDrawing {
 	 * @param color
 	 */
 	public HyperbolicLineDrawing(Color color) {
-		this(new HashHyperbolicLineSet(), color);
+		this(new ArrayHyperbolicLineSet(), color);
 	}
 	
 	

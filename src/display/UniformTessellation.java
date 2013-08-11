@@ -23,7 +23,7 @@ public final class UniformTessellation implements HyperbolicTessellation {
 	private HyperbolicPointGenerator pointGenerator = new HalfPlanePointGenerator();
 	private HyperbolicRigidMotionGenerator motionGenerator = new HalfPlaneMotionGenerator();
 	private List<HyperbolicRigidMotion> vertices = new ArrayList<HyperbolicRigidMotion>();
-	private HyperbolicLineSet lineSet = new HashHyperbolicLineSet();
+	private HyperbolicLineSet lineSet = new ArrayHyperbolicLineSet();
 	private HyperbolicPoint diskCenter = pointGenerator.diskCenter();
 	private int numVertices = 0;
 	

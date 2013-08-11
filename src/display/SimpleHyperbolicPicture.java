@@ -38,7 +38,7 @@ public final class SimpleHyperbolicPicture implements HyperbolicPicture {
 	public synchronized Set<HyperbolicLineDrawing> getTransformedDrawings() {
 		Set<HyperbolicLineDrawing> transformedDrawings = new HashSet<HyperbolicLineDrawing>();
 		for (HyperbolicLineDrawing drawing : lineDrawings) {
-			HyperbolicLineSet transformedLines = new HashHyperbolicLineSet();
+			HyperbolicLineSet transformedLines = new ArrayHyperbolicLineSet();
 			for (HyperbolicLine line : drawing.getLineSet().getLines()) {
 				HyperbolicLine transformedLine = rigidMotion.transform(line);
 				transformedLines.addLine(transformedLine);
