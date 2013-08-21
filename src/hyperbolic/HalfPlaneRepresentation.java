@@ -3,6 +3,8 @@
  */
 package hyperbolic;
 
+import static java.lang.Math.*;
+
 /**
  * @author Ned
  *
@@ -33,6 +35,19 @@ public final class HalfPlaneRepresentation implements HyperbolicPoint {
 		double complexNumerator = x*x+y*y-1;
 		return new double[]{realNumerator/denominator,
 				            complexNumerator/denominator};
+	}
+
+	@Override
+	public double distanceFrom(HyperbolicPoint other) {
+		double[] coords = other.getHalfPlanePosition();
+		double x2 = coords[0];
+		double y2 = coords[1];
+		double z = ((x-x2)*(x-x2)+(y-y2)*(y-y2))/(2*y*y2);
+		return acosh(z);
+	}
+	
+	private double acosh(double z) {
+		return log(z+sqrt(z+1)*sqrt(z-1));
 	}
 
 }

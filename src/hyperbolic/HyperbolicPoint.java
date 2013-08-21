@@ -12,5 +12,7 @@ public interface HyperbolicPoint {
 	double[] getHalfPlanePosition();
 	
 	double[] getDiskPosition();
+	
+	double distanceFrom(HyperbolicPoint other);
 
 }

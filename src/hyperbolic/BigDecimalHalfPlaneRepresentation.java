@@ -3,6 +3,9 @@
  */
 package hyperbolic;
 
+import static java.lang.Math.log;
+import static java.lang.Math.sqrt;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 
@@ -47,6 +50,33 @@ public final class BigDecimalHalfPlaneRepresentation implements HyperbolicPoint 
 		BigDecimal realPart = realNumerator.divide(denominator, mathContext);
 		BigDecimal complexPart = complexNumerator.divide(denominator, mathContext);
 		return new double[]{realPart.doubleValue(), complexPart.doubleValue()};
+	}
+
+	@Override
+	public double distanceFrom(HyperbolicPoint other) {
+		BigDecimal x2, y2;
+		if (other instanceof BigDecimalHalfPlaneRepresentation) {
+			BigDecimalHalfPlaneRepresentation oth = (BigDecimalHalfPlaneRepresentation)other;
+			x2 = oth.x;
+			y2 = oth.y;
+		}
+		else {
+			double[] coords = other.getHalfPlanePosition();
+			x2 = new BigDecimal(coords[0]);
+			y2 = new BigDecimal(coords[1]);
+		}
+		
+		/* double z = ((x-x2)*(x-x2)+(y-y2)*(y-y2))/(2*y*y2);
+		   return acosh(z) */
+		
+		BigDecimal numerator = x.subtract(x2).pow(2).add(y.subtract(y2).pow(2));
+		BigDecimal denominator = y.multiply(y2).multiply(BigDecimal.valueOf(2));
+		BigDecimal z = numerator.divide(denominator, mathContext);
+		return acosh(z.doubleValue());
+	}
+	
+	private double acosh(double z) {
+		return log(z+sqrt(z+1)*sqrt(z-1));
 	}
 
 }
