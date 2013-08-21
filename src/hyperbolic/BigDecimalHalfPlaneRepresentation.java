@@ -71,12 +71,12 @@ public final class BigDecimalHalfPlaneRepresentation implements HyperbolicPoint 
 		
 		BigDecimal numerator = x.subtract(x2).pow(2).add(y.subtract(y2).pow(2));
 		BigDecimal denominator = y.multiply(y2).multiply(BigDecimal.valueOf(2));
-		BigDecimal z = numerator.divide(denominator, mathContext);
+		BigDecimal z = numerator.divide(denominator, mathContext).add(BigDecimal.ONE);
 		return acosh(z.doubleValue());
 	}
 	
 	private double acosh(double z) {
-		return log(z+sqrt(z+1)*sqrt(z-1));
+		return log(z+sqrt(z*z-1));
 	}
 
 }

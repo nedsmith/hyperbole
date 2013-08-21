@@ -42,12 +42,12 @@ public final class HalfPlaneRepresentation implements HyperbolicPoint {
 		double[] coords = other.getHalfPlanePosition();
 		double x2 = coords[0];
 		double y2 = coords[1];
-		double z = ((x-x2)*(x-x2)+(y-y2)*(y-y2))/(2*y*y2);
+		double z = ((x-x2)*(x-x2)+(y-y2)*(y-y2))/(2*y*y2)+1;
 		return acosh(z);
 	}
 	
 	private double acosh(double z) {
-		return log(z+sqrt(z+1)*sqrt(z-1));
+		return log(z+sqrt(z*z-1));
 	}
 
 }

@@ -16,6 +16,8 @@ public class HyperbolicDistanceTest {
 	double tolerance = 1e-3;
 	
 	private void testEqual(double d1, double d2) {
+		if (Double.isNaN(d1) || Double.isNaN(d2))
+			fail("Got NaN");
 		if (Math.abs(d1-d2)>tolerance)
 			fail("Expected "+d1+" but was "+d2);
 	}
