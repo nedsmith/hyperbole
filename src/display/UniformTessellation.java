@@ -45,7 +45,6 @@ public final class UniformTessellation implements HyperbolicTessellation {
 		vertices.add(startPosition);
 		for (int i=0; i<levels; i++) {
 			expandVerticies();
-			System.out.println(numVertices);
 		}
 		return lineSet;
 	}
