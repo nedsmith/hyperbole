@@ -5,6 +5,7 @@ package display;
 
 import hyperbolic.HalfPlaneMotion;
 import hyperbolic.HyperbolicLine;
+import hyperbolic.HyperbolicPoint;
 import hyperbolic.HyperbolicRigidMotion;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.Set;
 public final class SimpleHyperbolicPicture implements HyperbolicPicture {
 	
 	private final List<HyperbolicLineDrawing> lineDrawings = new ArrayList<HyperbolicLineDrawing>();
+	private final List<HyperbolicPolyDrawing> polyDrawings = new ArrayList<HyperbolicPolyDrawing>();
 	private HyperbolicRigidMotion rigidMotion = new HalfPlaneMotion();
 
 	@Override
@@ -48,6 +50,38 @@ public final class SimpleHyperbolicPicture implements HyperbolicPicture {
 			transformedDrawings.add(new HyperbolicLineDrawing(transformedLines, drawing.getColor()));
 		}
 		return transformedDrawings;
+	}
+
+	@Override
+	public void addPolyDrawing(HyperbolicPolyDrawing polyDrawing) {
+		this.polyDrawings.add(polyDrawing);
+	}
+
+	@Override
+	public void clearPolyDrawings() {
+		this.polyDrawings.clear();
+	}
+
+	@Override
+	public List<HyperbolicPolyDrawing> getTransformedPolys() {
+		List<HyperbolicPolyDrawing> transformedDrawings = new ArrayList<HyperbolicPolyDrawing>();
+		for (HyperbolicPolyDrawing drawing : polyDrawings) {
+			HyperbolicPolyDrawing transformedDrawing = new HyperbolicPolyDrawing(drawing.color());
+			for (HyperbolicPoly poly : drawing.getPolys()) {
+				transformedDrawing.addPoly(transformPoly(poly));
+			}
+			transformedDrawings.add(transformedDrawing);
+		}
+		return transformedDrawings;
+	}
+	
+	private HyperbolicPoly transformPoly(HyperbolicPoly poly) {
+		HyperbolicPoint[] points = poly.points();
+		HyperbolicPoint[] newPoints = new HyperbolicPoint[points.length]; 
+		for (int i=0; i<points.length; i++) {
+			newPoints[i] = this.rigidMotion.transform(points[i]);
+		}
+		return new HyperbolicPoly(newPoints);
 	}
 
 }

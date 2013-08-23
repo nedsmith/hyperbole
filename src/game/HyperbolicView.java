@@ -16,6 +16,8 @@ import java.awt.Color;
 import display.HyperbolicLineDrawing;
 import display.HyperbolicLineSet;
 import display.HyperbolicPicture;
+import display.HyperbolicPoly;
+import display.HyperbolicPolyDrawing;
 import display.HyperbolicTessellation;
 import display.SimpleHyperbolicPicture;
 import display.UniformTessellation;
@@ -27,7 +29,7 @@ import display.UniformTessellation;
 public class HyperbolicView {
 	
 
-	private HyperbolicLineDrawing player = new HyperbolicLineDrawing(Color.blue);
+	private HyperbolicPolyDrawing player = new HyperbolicPolyDrawing(Color.blue);
 	private HyperbolicLineDrawing trail = new HyperbolicLineDrawing(Color.red);
 	private HyperbolicPicture picture = new SimpleHyperbolicPicture();
 	
@@ -53,7 +55,7 @@ public class HyperbolicView {
 		HyperbolicLineDrawing tessellationDrawing = new HyperbolicLineDrawing(tessellationLines, Color.green);
 		picture.addLineDrawing(tessellationDrawing);
 		picture.addLineDrawing(trail);
-		picture.addLineDrawing(player);
+		picture.addPolyDrawing(player);
 	}
 	
 	public void setTurn(double turn) {
@@ -90,18 +92,13 @@ public class HyperbolicView {
 	}
 	
 	private void drawPlayer() {
-		player.getLineSet().clearLines();
+		player.clearPolys();
 		int points = playerDrawing.length;
-		for (int i=0; i<points-1; i++) {
-			HyperbolicPoint p1 = positionAndDirection.transform(playerDrawing[i]);
-			HyperbolicPoint p2 = positionAndDirection.transform(playerDrawing[i+1]);
-			SimpleHyperbolicLine line = new SimpleHyperbolicLine(p1, p2);
-			player.getLineSet().addLine(line);
+		HyperbolicPoint[] newPoints = new HyperbolicPoint[3];
+		for (int i=0; i<points; i++) {
+			newPoints[i] = positionAndDirection.transform(playerDrawing[i]);
 		}
-		HyperbolicPoint p1 = positionAndDirection.transform(playerDrawing[points-1]);
-		HyperbolicPoint p2 = positionAndDirection.transform(playerDrawing[0]);
-		SimpleHyperbolicLine line = new SimpleHyperbolicLine(p1, p2);
-		player.getLineSet().addLine(line);
+		player.addPoly(new HyperbolicPoly(newPoints));
 	}
 	
 	public HyperbolicPicture getPicture() {

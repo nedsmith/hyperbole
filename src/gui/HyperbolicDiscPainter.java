@@ -4,6 +4,7 @@
 package gui;
 
 import hyperbolic.HyperbolicLine;
+import hyperbolic.HyperbolicPoint;
 
 import java.awt.Color;
 import java.util.Collection;
@@ -12,6 +13,8 @@ import org.lwjgl.opengl.GL11;
 
 import display.HyperbolicLineDrawing;
 import display.HyperbolicPicture;
+import display.HyperbolicPoly;
+import display.HyperbolicPolyDrawing;
 
 
 /**
@@ -38,6 +41,9 @@ public class HyperbolicDiscPainter implements GlPainter {
 		for (HyperbolicLineDrawing drawing : picture.getTransformedDrawings()) {
 			paintLineDrawing(drawing);
 		}
+		for (HyperbolicPolyDrawing drawing : picture.getTransformedPolys()) {
+			paintPolyDrawing(drawing);
+		}
 	}
 	
 	private void paintLineDrawing(HyperbolicLineDrawing drawing) {
@@ -50,6 +56,23 @@ public class HyperbolicDiscPainter implements GlPainter {
 			int[] startPos = plot(start);
 			int[] endPos = plot(end);
 			drawLine(startPos, endPos);
+		}
+		GL11.glEnd();
+	}
+	
+	private void paintPolyDrawing(HyperbolicPolyDrawing drawing) {
+		setColor(drawing.color());
+		for (HyperbolicPoly poly : drawing.getPolys()) {
+			drawPoly(poly);
+		}
+	}
+	
+	private void drawPoly(HyperbolicPoly poly) {
+		GL11.glBegin(GL11.GL_POLYGON);
+		for (HyperbolicPoint point : poly.points()) {
+			double[] coords = point.getDiskPosition();
+			int[] pos = plot(coords);
+			GL11.glVertex2d(pos[0], pos[1]);
 		}
 		GL11.glEnd();
 	}
