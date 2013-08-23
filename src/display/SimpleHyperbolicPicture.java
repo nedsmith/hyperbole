@@ -7,7 +7,9 @@ import hyperbolic.HalfPlaneMotion;
 import hyperbolic.HyperbolicLine;
 import hyperbolic.HyperbolicRigidMotion;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -16,7 +18,7 @@ import java.util.Set;
  */
 public final class SimpleHyperbolicPicture implements HyperbolicPicture {
 	
-	private final Set<HyperbolicLineDrawing> lineDrawings = new HashSet<HyperbolicLineDrawing>();
+	private final List<HyperbolicLineDrawing> lineDrawings = new ArrayList<HyperbolicLineDrawing>();
 	private HyperbolicRigidMotion rigidMotion = new HalfPlaneMotion();
 
 	@Override
