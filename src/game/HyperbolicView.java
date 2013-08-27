@@ -18,7 +18,6 @@ import display.HyperbolicLineSet;
 import display.HyperbolicPicture;
 import display.HyperbolicPoly;
 import display.HyperbolicPolyDrawing;
-import display.HyperbolicTessellation;
 import display.SimpleHyperbolicPicture;
 import display.UniformTessellation;
 
@@ -38,6 +37,7 @@ public class HyperbolicView {
 	
 	private HyperbolicRigidMotion positionAndDirection = motionGenerator.identity();
 	private HyperbolicRigidMotion turns = motionGenerator.identity();
+	private boolean gridMode=false;
 	
 	private double currentTurn = 0;
 	private int direction = 0;
@@ -48,12 +48,17 @@ public class HyperbolicView {
 		pointGenerator.disk(-0.02, -0.02),
 	};
 	
-	private HyperbolicTessellation tessellation = new UniformTessellation();
+	private UniformTessellation tessellation = new UniformTessellation();
 	private HyperbolicLineSet tessellationLines = tessellation.makeLineSet();
+	private HyperbolicPolyDrawing tessellationPolyDrawing;
 	
 	public HyperbolicView() {
-		HyperbolicLineDrawing tessellationDrawing = new HyperbolicLineDrawing(tessellationLines, Color.green);
-		picture.addDrawing(tessellationDrawing);
+		if (gridMode)
+			picture.addDrawing(new HyperbolicLineDrawing(tessellationLines, Color.green));
+		else {
+			tessellationPolyDrawing = new HyperbolicPolyDrawing(Color.green);
+			picture.addDrawing(tessellationPolyDrawing);
+		}
 		picture.addDrawing(trail);
 		picture.addDrawing(player);
 	}
@@ -80,8 +85,7 @@ public class HyperbolicView {
 		if (direction!=0)
 			trail.getLineSet().addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
 		if (counter%50==0) {
-			HyperbolicLineSet newLines = tessellation.makeLineSetNear(currentPosition);
-			tessellationLines.setLines(newLines.getLines());
+			updateTessellation(currentPosition);
 		}
 
 		turns = turns.composeWith(turn);
@@ -89,6 +93,16 @@ public class HyperbolicView {
 		
 		picture.setRigidMotion(cameraAngle.inverse());
 		counter++;
+	}
+	
+	private void updateTessellation(HyperbolicPoint currentPosition) {
+		if (gridMode) {
+			HyperbolicLineSet newLines = tessellation.makeLineSetNear(currentPosition);
+			tessellationLines.setLines(newLines.getLines());
+		}
+		else {
+			tessellationPolyDrawing.setPolys(tessellation.makePolysNear(currentPosition));
+		}
 	}
 	
 	private void drawPlayer() {
