@@ -26,7 +26,6 @@ public final class UniformTessellation implements HyperbolicTessellation, Hyperb
 	private boolean polyMode;
 	private HyperbolicLineSet lineSet = new ArrayHyperbolicLineSet();
 	private List<HyperbolicPoly> polySet = new ArrayList<HyperbolicPoly>();
-	private HyperbolicPoint diskCenter = pointGenerator.diskCenter();
 	private int numVertices = 0;
 	
 	private double advanceFactor = Math.pow(2.414, 0.5);
@@ -34,6 +33,20 @@ public final class UniformTessellation implements HyperbolicTessellation, Hyperb
 	private double turnAngle = Math.PI / 3.0;
 	private int pathways = 5;
 	private int levels = 4;
+	
+	private HyperbolicPoint diskCenter = pointGenerator.diskCenter();
+	private HyperbolicRigidMotion uTurn = motionGenerator.rotateAboutDiskCenter(Math.PI);
+	private HyperbolicRigidMotion turn = motionGenerator.rotateAboutDiskCenter(turnAngle);
+	
+	private HyperbolicRigidMotion toFaceCentreLeft;
+	private HyperbolicRigidMotion toFaceCentreRight;
+	{
+		final HyperbolicRigidMotion halfTurnLeft = motionGenerator.rotateAboutDiskCenter(-turnAngle/2.0);
+		final HyperbolicRigidMotion halfTurnRight = motionGenerator.rotateAboutDiskCenter(turnAngle/2.0);
+		final HyperbolicRigidMotion forward = motionGenerator.scalePlane(4.0);
+		toFaceCentreLeft = halfTurnLeft.composeWith(forward);
+		toFaceCentreRight = halfTurnRight.composeWith(forward);
+	}
 	
 	private class Vertex {
 		HyperbolicRigidMotion position;
@@ -74,9 +87,7 @@ public final class UniformTessellation implements HyperbolicTessellation, Hyperb
 	}
 	
 	private void expandVertex(Vertex vertex) {
-		HyperbolicRigidMotion uTurn = motionGenerator.rotateAboutDiskCenter(Math.PI);
 		HyperbolicRigidMotion startPosition = vertex.position.composeWith(uTurn);
-		HyperbolicRigidMotion turn = motionGenerator.rotateAboutDiskCenter(turnAngle);
 		for (int i=0; i<pathways; i++) {
 			startPosition = startPosition.composeWith(turn);
 			boolean colour = i%2==0==vertex.colour;
@@ -92,12 +103,9 @@ public final class UniformTessellation implements HyperbolicTessellation, Hyperb
 		HyperbolicRigidMotion positionAndDirection = startPosition;
 		HyperbolicPoint faceCentre = null;
 		if (polyMode) {
-			double angle = colour ? turnAngle/2.0 : -turnAngle/2.0;
-			final HyperbolicRigidMotion halfTurn = motionGenerator.rotateAboutDiskCenter(angle);
-			final HyperbolicRigidMotion forward = motionGenerator.scalePlane(4.0);
-			faceCentre = positionAndDirection.composeWith(halfTurn).composeWith(forward).transform(diskCenter);
+			HyperbolicRigidMotion toFaceCentre  = colour ? toFaceCentreLeft : toFaceCentreRight;
+			faceCentre = positionAndDirection.composeWith(toFaceCentre).transform(diskCenter);
 		}
-		
 		for (int i=0; i<sideLength; i++) {
 			HyperbolicPoint currentPosition = positionAndDirection.transform(diskCenter);
 			positionAndDirection = positionAndDirection.composeWith(goForward);
