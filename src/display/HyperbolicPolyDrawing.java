@@ -12,13 +12,13 @@ import java.util.List;
  * @author Ned
  *
  */
-public final class HyperbolicPolyDrawing {
+public final class HyperbolicPolyDrawing extends HyperbolicDrawing {
 	
 	private final List<HyperbolicPoly> polys = new ArrayList<HyperbolicPoly>();
-	private Color color;
+
 	
 	public HyperbolicPolyDrawing(Color color) {
-		this.color = color;
+		super(color);
 	}
 	
 	public void addPoly(HyperbolicPoly poly) {
@@ -36,10 +36,6 @@ public final class HyperbolicPolyDrawing {
 	public void setPolys(Collection<HyperbolicPoly> polys) {
 		this.polys.clear();
 		this.polys.addAll(polys);
-	}
-	
-	public Color color() {
-		return this.color;
 	}
 
 }

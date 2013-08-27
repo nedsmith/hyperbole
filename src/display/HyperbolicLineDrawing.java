@@ -9,23 +9,15 @@ import java.awt.Color;
  * @author Ned
  *
  */
-public final class HyperbolicLineDrawing {
+public final class HyperbolicLineDrawing extends HyperbolicDrawing {
 
 	private final HyperbolicLineSet lineSet;
-	private final Color color;
 	
 	/**
 	 * @return the lineSet
 	 */
 	public HyperbolicLineSet getLineSet() {
 		return lineSet;
-	}
-
-	/**
-	 * @return the color
-	 */
-	public Color getColor() {
-		return color;
 	}
 
 	/**
@@ -47,8 +39,8 @@ public final class HyperbolicLineDrawing {
 	 * @param color
 	 */
 	public HyperbolicLineDrawing(HyperbolicLineSet lineSet, Color color) {
+		super(color);
 		this.lineSet = lineSet;
-		this.color = color;
 	}
 
 	/**

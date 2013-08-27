@@ -61,7 +61,7 @@ public class HyperbolicDiscPainter implements GlPainter {
 	}
 	
 	private void paintPolyDrawing(HyperbolicPolyDrawing drawing) {
-		setColor(drawing.color());
+		setColor(drawing.getColor());
 		for (HyperbolicPoly poly : drawing.getPolys()) {
 			drawPoly(poly);
 		}

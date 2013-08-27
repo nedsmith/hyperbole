@@ -66,7 +66,7 @@ public final class SimpleHyperbolicPicture implements HyperbolicPicture {
 	public List<HyperbolicPolyDrawing> getTransformedPolys() {
 		List<HyperbolicPolyDrawing> transformedDrawings = new ArrayList<HyperbolicPolyDrawing>();
 		for (HyperbolicPolyDrawing drawing : polyDrawings) {
-			HyperbolicPolyDrawing transformedDrawing = new HyperbolicPolyDrawing(drawing.color());
+			HyperbolicPolyDrawing transformedDrawing = new HyperbolicPolyDrawing(drawing.getColor());
 			for (HyperbolicPoly poly : drawing.getPolys()) {
 				transformedDrawing.addPoly(transformPoly(poly));
 			}
