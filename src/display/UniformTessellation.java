@@ -57,6 +57,7 @@ public final class UniformTessellation implements HyperbolicTessellation, Hyperb
 	
 	@Override
 	public HyperbolicLineSet makeLineSet() {
+		polyMode=false;
 		expandFromStart();
 		return lineSet;
 	}
@@ -140,6 +141,7 @@ public final class UniformTessellation implements HyperbolicTessellation, Hyperb
 
 	@Override
 	public HyperbolicLineSet makeLineSetNear(HyperbolicPoint position) {
+		polyMode=false;
 		expandNear(position);
 		return lineSet;
 	}
