@@ -18,35 +18,53 @@ import java.util.List;
  * @author Ned
  *
  */
-public final class UniformTessellation implements HyperbolicTessellation {
+public final class UniformTessellation implements HyperbolicTessellation, HyperbolicPolyTessellation {
 
 	private HyperbolicPointGenerator pointGenerator = new HalfPlanePointGenerator();
 	private HyperbolicRigidMotionGenerator motionGenerator = new HalfPlaneMotionGenerator();
-	private List<HyperbolicRigidMotion> vertices = new ArrayList<HyperbolicRigidMotion>();
+	private List<Vertex> vertices = new ArrayList<Vertex>();
+	private boolean polyMode;
 	private HyperbolicLineSet lineSet = new ArrayHyperbolicLineSet();
+	private List<HyperbolicPoly> polySet = new ArrayList<HyperbolicPoly>();
+	private HyperbolicPoint[] currentPolyPoints;
+	private int numCurrentPolyPoints;
 	private HyperbolicPoint diskCenter = pointGenerator.diskCenter();
 	private int numVertices = 0;
 	
 	private double advanceFactor = Math.pow(2.414, 0.5);
-	private double sideLength = 4;
+	private int sideLength = 4;
+	private int numSides = 4;
 	private double turnAngle = Math.PI / 3.0;
 	private int pathways = 5;
 	private int levels = 4;
+	
+	private class Vertex {
+		HyperbolicRigidMotion position;
+		boolean colour;
+	}
 	
 	private HyperbolicRigidMotion goForward = motionGenerator.scalePlane(advanceFactor);
 	
 	@Override
 	public HyperbolicLineSet makeLineSet() {
-		return makeLinesFrom(motionGenerator.identity());
+		expandFromStart();
+		return lineSet;
 	}
 	
-	private HyperbolicLineSet makeLinesFrom(HyperbolicRigidMotion startPosition) {
+	private void expandFromStart() {
+		Vertex vertex = new Vertex();
+		vertex.position = motionGenerator.identity();
+		vertex.colour = false;
+		expandFrom(vertex);
+	}
+	
+	private void expandFrom(Vertex startPosition) {
 		lineSet.clearLines();
+		polySet.clear();
 		vertices.add(startPosition);
 		for (int i=0; i<levels; i++) {
 			expandVerticies();
 		}
-		return lineSet;
 	}
 	
 	private void expandVerticies() {
@@ -56,37 +74,58 @@ public final class UniformTessellation implements HyperbolicTessellation {
 		for (int i=firstVertex; i<endVertex; i++) {
 			expandVertex(vertices.get(i));
 		}
-
 	}
 	
-	private void expandVertex(HyperbolicRigidMotion vertex) {
+	private void expandVertex(Vertex vertex) {
 		HyperbolicRigidMotion uTurn = motionGenerator.rotateAboutDiskCenter(Math.PI);
-		HyperbolicRigidMotion startPosition = vertex.composeWith(uTurn);
+		HyperbolicRigidMotion startPosition = vertex.position.composeWith(uTurn);
 		HyperbolicRigidMotion turn = motionGenerator.rotateAboutDiskCenter(turnAngle);
 		for (int i=0; i<pathways; i++) {
 			startPosition = startPosition.composeWith(turn);
-			HyperbolicRigidMotion endPosition = advanceFrom(startPosition);
-			vertices.add(endPosition);
+			boolean colour = i%2==0==vertex.colour;
+			if (polyMode && colour) drawPoly(startPosition);
+			HyperbolicRigidMotion endPosition = advanceAlongLine(startPosition, !polyMode);
+			Vertex newVertex = new Vertex();
+			newVertex.position = endPosition;
+			newVertex.colour = colour;
+			vertices.add(newVertex);
 		}
 	}
 	
-	private HyperbolicRigidMotion advanceFrom(HyperbolicRigidMotion startPosition) {
+	private HyperbolicRigidMotion advanceAlongLine(HyperbolicRigidMotion startPosition, boolean draw) {
 		HyperbolicRigidMotion positionAndDirection = startPosition;
 		for (int i=0; i<sideLength; i++) {
 			HyperbolicPoint currentPosition = positionAndDirection.transform(diskCenter);
 			positionAndDirection = positionAndDirection.composeWith(goForward);
 			HyperbolicPoint newPosition = positionAndDirection.transform(diskCenter);
-			lineSet.addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
+			if (draw) {
+				if (polyMode)
+					currentPolyPoints[numCurrentPolyPoints++] = currentPosition;
+				else
+					lineSet.addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
+			}
 		}
 		return positionAndDirection;
 	}
-
-	@Override
-	public HyperbolicLineSet makeLineSetNear(HyperbolicPoint position) {
+	
+	private void drawPoly(HyperbolicRigidMotion startPosition) {
+		currentPolyPoints = new HyperbolicPoint[numSides*sideLength];
+		numCurrentPolyPoints=0;
+		HyperbolicRigidMotion position = startPosition;
+		final HyperbolicRigidMotion turn = motionGenerator.rotateAboutDiskCenter(Math.PI-turnAngle);
+		for (int i=0; i<numSides; i++) {
+			position = advanceAlongLine(position, true);
+			position = position.composeWith(turn);
+		}
+		final HyperbolicPoly poly = new HyperbolicPoly(currentPolyPoints);
+		polySet.add(poly);
+	}
+	
+	private void expandNear(HyperbolicPoint point) {
 		double minDistance = Double.MAX_VALUE;
-		HyperbolicRigidMotion closestVertex = null;
-		for (HyperbolicRigidMotion vertex : vertices) {
-			HyperbolicPoint transform = vertex.inverse().transform(position);
+		Vertex closestVertex = null;
+		for (Vertex vertex : vertices) {
+			HyperbolicPoint transform = vertex.position.inverse().transform(point);
 			double[] diskPosition = transform.getDiskPosition();
 			double distance = 
 					diskPosition[0]*diskPosition[0]+diskPosition[1]*diskPosition[1];
@@ -98,7 +137,27 @@ public final class UniformTessellation implements HyperbolicTessellation {
 		}
 		vertices.clear();
 		numVertices = 0;
-		return makeLinesFrom(closestVertex);
+		expandFrom(closestVertex);
+	}
+
+	@Override
+	public HyperbolicLineSet makeLineSetNear(HyperbolicPoint position) {
+		expandNear(position);
+		return lineSet;
+	}
+
+	@Override
+	public List<HyperbolicPoly> makePolys() {
+		polyMode=true;
+		expandFromStart();
+		return polySet;
+	}
+
+	@Override
+	public List<HyperbolicPoly> makePolysNear(HyperbolicPoint point) {
+		polyMode=true;
+		expandNear(point);
+		return polySet;
 	}
 
 }
