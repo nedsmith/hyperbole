@@ -11,6 +11,7 @@ import java.util.Collection;
 
 import org.lwjgl.opengl.GL11;
 
+import display.HyperbolicDrawing;
 import display.HyperbolicLineDrawing;
 import display.HyperbolicPicture;
 import display.HyperbolicPoly;
@@ -38,11 +39,11 @@ public class HyperbolicDiscPainter implements GlPainter {
 	@Override
 	public void update() {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-		for (HyperbolicLineDrawing drawing : picture.getTransformedDrawings()) {
-			paintLineDrawing(drawing);
-		}
-		for (HyperbolicPolyDrawing drawing : picture.getTransformedPolys()) {
-			paintPolyDrawing(drawing);
+		for (HyperbolicDrawing drawing : picture.getTransformedDrawings()) {
+			if (drawing instanceof HyperbolicLineDrawing)
+				paintLineDrawing((HyperbolicLineDrawing)drawing);
+			else if (drawing instanceof HyperbolicPolyDrawing)
+				paintPolyDrawing((HyperbolicPolyDrawing)drawing);
 		}
 	}
 	

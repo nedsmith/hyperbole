@@ -9,9 +9,7 @@ import hyperbolic.HyperbolicPoint;
 import hyperbolic.HyperbolicRigidMotion;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Ned
@@ -19,17 +17,16 @@ import java.util.Set;
  */
 public final class SimpleHyperbolicPicture implements HyperbolicPicture {
 	
-	private final List<HyperbolicLineDrawing> lineDrawings = new ArrayList<HyperbolicLineDrawing>();
-	private final List<HyperbolicPolyDrawing> polyDrawings = new ArrayList<HyperbolicPolyDrawing>();
+	private final List<HyperbolicDrawing> lineDrawings = new ArrayList<HyperbolicDrawing>();
 	private HyperbolicRigidMotion rigidMotion = new HalfPlaneMotion();
 
 	@Override
-	public synchronized void addLineDrawing(HyperbolicLineDrawing lineDrawing) {
-		lineDrawings.add(lineDrawing);
+	public synchronized void addDrawing(HyperbolicDrawing drawing) {
+		lineDrawings.add(drawing);
 	}
 
 	@Override
-	public synchronized void clearLineDrawings() {
+	public synchronized void clearDrawings() {
 		lineDrawings.clear();
 	}
 
@@ -39,40 +36,34 @@ public final class SimpleHyperbolicPicture implements HyperbolicPicture {
 	}
 
 	@Override
-	public synchronized Set<HyperbolicLineDrawing> getTransformedDrawings() {
-		Set<HyperbolicLineDrawing> transformedDrawings = new HashSet<HyperbolicLineDrawing>();
-		for (HyperbolicLineDrawing drawing : lineDrawings) {
-			HyperbolicLineSet transformedLines = new ArrayHyperbolicLineSet();
-			for (HyperbolicLine line : drawing.getLineSet().getLines()) {
-				HyperbolicLine transformedLine = rigidMotion.transform(line);
-				transformedLines.addLine(transformedLine);
+	public synchronized List<HyperbolicDrawing> getTransformedDrawings() {
+		List<HyperbolicDrawing> transformedDrawings = new ArrayList<HyperbolicDrawing>();
+		for (HyperbolicDrawing drawing : lineDrawings) {
+			if (drawing instanceof HyperbolicLineDrawing) {
+				transformedDrawings.add(transformLineDrawing((HyperbolicLineDrawing)drawing));
 			}
-			transformedDrawings.add(new HyperbolicLineDrawing(transformedLines, drawing.getColor()));
+			else if (drawing instanceof HyperbolicPolyDrawing) {
+				transformedDrawings.add(transformPolyDrawing((HyperbolicPolyDrawing)drawing));
+			}
 		}
 		return transformedDrawings;
-	}
-
-	@Override
-	public void addPolyDrawing(HyperbolicPolyDrawing polyDrawing) {
-		this.polyDrawings.add(polyDrawing);
-	}
-
-	@Override
-	public void clearPolyDrawings() {
-		this.polyDrawings.clear();
-	}
-
-	@Override
-	public List<HyperbolicPolyDrawing> getTransformedPolys() {
-		List<HyperbolicPolyDrawing> transformedDrawings = new ArrayList<HyperbolicPolyDrawing>();
-		for (HyperbolicPolyDrawing drawing : polyDrawings) {
-			HyperbolicPolyDrawing transformedDrawing = new HyperbolicPolyDrawing(drawing.getColor());
-			for (HyperbolicPoly poly : drawing.getPolys()) {
-				transformedDrawing.addPoly(transformPoly(poly));
-			}
-			transformedDrawings.add(transformedDrawing);
+	}	
+	
+	private HyperbolicLineDrawing transformLineDrawing(HyperbolicLineDrawing lineDrawing) {
+		HyperbolicLineSet transformedLines = new ArrayHyperbolicLineSet();
+		for (HyperbolicLine line : lineDrawing.getLineSet().getLines()) {
+			HyperbolicLine transformedLine = rigidMotion.transform(line);
+			transformedLines.addLine(transformedLine);
 		}
-		return transformedDrawings;
+		return new HyperbolicLineDrawing(transformedLines, lineDrawing.getColor());
+	}
+	
+	private HyperbolicPolyDrawing transformPolyDrawing(HyperbolicPolyDrawing polyDrawing) {
+		HyperbolicPolyDrawing transformedDrawing = new HyperbolicPolyDrawing(polyDrawing.getColor());
+		for (HyperbolicPoly poly : polyDrawing.getPolys()) {
+			transformedDrawing.addPoly(transformPoly(poly));
+		}
+		return transformedDrawing;
 	}
 	
 	private HyperbolicPoly transformPoly(HyperbolicPoly poly) {

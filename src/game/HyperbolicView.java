@@ -53,9 +53,9 @@ public class HyperbolicView {
 	
 	public HyperbolicView() {
 		HyperbolicLineDrawing tessellationDrawing = new HyperbolicLineDrawing(tessellationLines, Color.green);
-		picture.addLineDrawing(tessellationDrawing);
-		picture.addLineDrawing(trail);
-		picture.addPolyDrawing(player);
+		picture.addDrawing(tessellationDrawing);
+		picture.addDrawing(trail);
+		picture.addDrawing(player);
 	}
 	
 	public void setTurn(double turn) {

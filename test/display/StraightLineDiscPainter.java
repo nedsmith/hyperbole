@@ -36,9 +36,9 @@ public class StraightLineDiscPainter implements HyperbolicPainter {
 		g.setColor(Color.BLACK);
 		g.drawOval(offsetX, offsetY, radius*2, radius*2);
 		
-		for (HyperbolicLineDrawing drawing : picture.getTransformedDrawings()) {
+		for (HyperbolicDrawing drawing : picture.getTransformedDrawings()) {
 			g.setColor(drawing.getColor());
-			Collection<HyperbolicLine> lines = drawing.getLineSet().getLines();
+			Collection<HyperbolicLine> lines = ((HyperbolicLineDrawing)drawing).getLineSet().getLines();
 			for (HyperbolicLine line : lines) {
 				double[] start = line.getStartPoint().getDiskPosition();
 				double[] end = line.getEndPoint().getDiskPosition();

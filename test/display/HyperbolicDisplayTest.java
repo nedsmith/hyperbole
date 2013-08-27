@@ -36,8 +36,8 @@ public class HyperbolicDisplayTest {
 		HyperbolicTessellation tessellation = new UniformTessellation();
 		HyperbolicLineSet tessellationLines = tessellation.makeLineSet();
 		HyperbolicLineDrawing tessellationDrawing = new HyperbolicLineDrawing(tessellationLines, Color.green);
-		picture.addLineDrawing(tessellationDrawing);
-		picture.addLineDrawing(trail);
+		picture.addDrawing(tessellationDrawing);
+		picture.addDrawing(trail);
 		
 		
 		for (;;) {

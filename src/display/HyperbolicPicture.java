@@ -6,7 +6,6 @@ package display;
 import hyperbolic.HyperbolicRigidMotion;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Ned
@@ -14,18 +13,12 @@ import java.util.Set;
  */
 public interface HyperbolicPicture {
 	
-	void addLineDrawing(HyperbolicLineDrawing lineDrawing);
+	void addDrawing(HyperbolicDrawing lineDrawing);
 
-	void clearLineDrawings();
+	void clearDrawings();
 	
 	void setRigidMotion(HyperbolicRigidMotion rigidMotion);
 	
-	Set<HyperbolicLineDrawing> getTransformedDrawings();
-	
-	void addPolyDrawing(HyperbolicPolyDrawing polyDrawing);
-	
-	void clearPolyDrawings();
-	
-	List<HyperbolicPolyDrawing> getTransformedPolys();
+	List<HyperbolicDrawing> getTransformedDrawings();
 
 }
