@@ -56,7 +56,7 @@ public class HyperbolicView {
 		if (gridMode)
 			picture.addDrawing(new HyperbolicLineDrawing(tessellationLines, Color.green));
 		else {
-			tessellationPolyDrawing = new HyperbolicPolyDrawing(Color.green);
+			tessellationPolyDrawing = new HyperbolicPolyDrawing(new Color(0,100,0));
 			picture.addDrawing(tessellationPolyDrawing);
 		}
 		picture.addDrawing(trail);
