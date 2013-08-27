@@ -26,14 +26,11 @@ public final class UniformTessellation implements HyperbolicTessellation, Hyperb
 	private boolean polyMode;
 	private HyperbolicLineSet lineSet = new ArrayHyperbolicLineSet();
 	private List<HyperbolicPoly> polySet = new ArrayList<HyperbolicPoly>();
-	private HyperbolicPoint[] currentPolyPoints;
-	private int numCurrentPolyPoints;
 	private HyperbolicPoint diskCenter = pointGenerator.diskCenter();
 	private int numVertices = 0;
 	
 	private double advanceFactor = Math.pow(2.414, 0.5);
 	private int sideLength = 4;
-	private int numSides = 4;
 	private double turnAngle = Math.PI / 3.0;
 	private int pathways = 5;
 	private int levels = 4;
@@ -83,8 +80,7 @@ public final class UniformTessellation implements HyperbolicTessellation, Hyperb
 		for (int i=0; i<pathways; i++) {
 			startPosition = startPosition.composeWith(turn);
 			boolean colour = i%2==0==vertex.colour;
-			if (polyMode && colour) drawPoly(startPosition);
-			HyperbolicRigidMotion endPosition = advanceAlongLine(startPosition, !polyMode);
+			HyperbolicRigidMotion endPosition = advanceAlongLine(startPosition, colour);
 			Vertex newVertex = new Vertex();
 			newVertex.position = endPosition;
 			newVertex.colour = colour;
@@ -92,33 +88,27 @@ public final class UniformTessellation implements HyperbolicTessellation, Hyperb
 		}
 	}
 	
-	private HyperbolicRigidMotion advanceAlongLine(HyperbolicRigidMotion startPosition, boolean draw) {
+	private HyperbolicRigidMotion advanceAlongLine(HyperbolicRigidMotion startPosition, boolean colour) {
 		HyperbolicRigidMotion positionAndDirection = startPosition;
+		HyperbolicPoint faceCentre = null;
+		if (polyMode) {
+			double angle = colour ? turnAngle/2.0 : -turnAngle/2.0;
+			final HyperbolicRigidMotion halfTurn = motionGenerator.rotateAboutDiskCenter(angle);
+			final HyperbolicRigidMotion forward = motionGenerator.scalePlane(4.0);
+			faceCentre = positionAndDirection.composeWith(halfTurn).composeWith(forward).transform(diskCenter);
+		}
+		
 		for (int i=0; i<sideLength; i++) {
 			HyperbolicPoint currentPosition = positionAndDirection.transform(diskCenter);
 			positionAndDirection = positionAndDirection.composeWith(goForward);
 			HyperbolicPoint newPosition = positionAndDirection.transform(diskCenter);
-			if (draw) {
-				if (polyMode)
-					currentPolyPoints[numCurrentPolyPoints++] = currentPosition;
-				else
-					lineSet.addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
+			if (polyMode) {
+				polySet.add(new HyperbolicPoly(currentPosition, newPosition, faceCentre));
 			}
+			else
+				lineSet.addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
 		}
 		return positionAndDirection;
-	}
-	
-	private void drawPoly(HyperbolicRigidMotion startPosition) {
-		currentPolyPoints = new HyperbolicPoint[numSides*sideLength];
-		numCurrentPolyPoints=0;
-		HyperbolicRigidMotion position = startPosition;
-		final HyperbolicRigidMotion turn = motionGenerator.rotateAboutDiskCenter(Math.PI-turnAngle);
-		for (int i=0; i<numSides; i++) {
-			position = advanceAlongLine(position, true);
-			position = position.composeWith(turn);
-		}
-		final HyperbolicPoly poly = new HyperbolicPoly(currentPolyPoints);
-		polySet.add(poly);
 	}
 	
 	private void expandNear(HyperbolicPoint point) {
