@@ -77,6 +77,7 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 		int numSteps = rng.randomInt(30);
 		for (int i=0; i<numSteps; i++) {
 			position = takeOneStep(position);
+			if (position==null) return;
 		}
 		verticies.add(position);
 	}
@@ -87,12 +88,19 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 		points[0] = point(position.composeWith(stepLeft));
 		points[1] = point(position.composeWith(stepRight));
 		position = position.composeWith(forward);
-		collisionDetector.add(new Object(), position.transform(diskCenter));
+		if (isColliding(point(position))) return null;
 		points[2] = point(position.composeWith(stepRight));
 		points[3] = point(position.composeWith(stepLeft));
 		HyperbolicPoly poly = new HyperbolicPoly(points);
 		polySet.add(poly);
 		return position;
+	}
+	
+	private boolean isColliding(HyperbolicPoint point) {
+		List<Object> collisions = collisionDetector.detectCollisions(point);
+		if (!collisions.isEmpty()) return true;
+		collisionDetector.add(new Object(), point);
+		return false;
 	}
 
 	@Override
