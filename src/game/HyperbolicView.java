@@ -3,8 +3,10 @@
  */
 package game;
 
+import hyperbolic.HalfPlaneCollisionDetector;
 import hyperbolic.HalfPlaneMotionGenerator;
 import hyperbolic.HalfPlanePointGenerator;
+import hyperbolic.HyperbolicCollisionDetector;
 import hyperbolic.HyperbolicPoint;
 import hyperbolic.HyperbolicPointGenerator;
 import hyperbolic.HyperbolicRigidMotion;
@@ -39,8 +41,12 @@ public class HyperbolicView {
 	private HyperbolicRigidMotion turns = motionGenerator.identity();
 	private boolean gridMode=false;
 	
+	private HyperbolicCollisionDetector<Object> collisionDetector = new HalfPlaneCollisionDetector<Object>();
+	
 	private double currentTurn = 0;
 	private int direction = 0;
+	private boolean trailOn = false;
+	
 	private int counter = 0;
 	private HyperbolicPoint[] playerDrawing = new HyperbolicPoint[] {
 		pointGenerator.disk(0, 0.04),
@@ -71,6 +77,10 @@ public class HyperbolicView {
 		this.direction = direction;
 	}
 	
+	public void setTrailOn(boolean trailOn) {
+		this.trailOn = trailOn;
+	}
+	
 	public void update() {
 		double turnToUse = currentTurn;
 		HyperbolicRigidMotion turn = motionGenerator.rotateAboutDiskCenter(turnToUse);
@@ -82,10 +92,19 @@ public class HyperbolicView {
 		HyperbolicPoint newPosition = positionAndDirection.transform(pointGenerator.diskCenter());
 		drawPlayer();
 		
-		if (direction!=0)
+		if (counter%50==0)
+			System.out.println("Distance: "+currentPosition.distanceFrom(pointGenerator.diskCenter()));
+		
+		if (direction!=0 && trailOn) {
 			trail.getLineSet().addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
+			collisionDetector.add(new Object(), currentPosition);
+		}
 		if (counter%50==0) {
 			updateTessellation(currentPosition);
+		}
+
+		if (!collisionDetector.detectCollisions(newPosition).isEmpty()) {
+			System.out.println("Collision!!");
 		}
 
 		turns = turns.composeWith(turn);

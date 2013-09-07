@@ -58,10 +58,12 @@ public class HyperbolicGame {
 				if (key==Keyboard.KEY_D) view.setTurn(-TURN_FACTOR);
 				if (key==Keyboard.KEY_W) view.setDirection(1);
 				if (key==Keyboard.KEY_S) view.setDirection(-1);
+				if (key==Keyboard.KEY_SPACE) view.setTrailOn(true);
 			}
 			else {
 				if (key==Keyboard.KEY_A || key==Keyboard.KEY_D) view.setTurn(0);
 				if (key==Keyboard.KEY_W || key==Keyboard.KEY_S) view.setDirection(0);
+				if (key==Keyboard.KEY_SPACE) view.setTrailOn(false);
 			}
 		}
 	}
