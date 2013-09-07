@@ -21,6 +21,7 @@ import display.HyperbolicPicture;
 import display.HyperbolicPoly;
 import display.HyperbolicPolyDrawing;
 import display.SimpleHyperbolicPicture;
+import display.TerrainGenerator;
 import display.UniformTessellation;
 
 /**
@@ -57,6 +58,8 @@ public class HyperbolicView {
 	private UniformTessellation tessellation = new UniformTessellation();
 	private HyperbolicLineSet tessellationLines = tessellation.makeLineSet();
 	private HyperbolicPolyDrawing tessellationPolyDrawing;
+	private TerrainGenerator terrainGenerator = new TerrainGenerator();
+	private HyperbolicPolyDrawing terrain = new HyperbolicPolyDrawing(new Color(150,0,150));
 	
 	public HyperbolicView() {
 		if (gridMode)
@@ -65,6 +68,8 @@ public class HyperbolicView {
 			tessellationPolyDrawing = new HyperbolicPolyDrawing(new Color(0,100,0));
 			picture.addDrawing(tessellationPolyDrawing);
 		}
+		terrain.setPolys(terrainGenerator.makePolys());
+		picture.addDrawing(terrain);
 		picture.addDrawing(trail);
 		picture.addDrawing(player);
 	}
