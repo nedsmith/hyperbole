@@ -14,11 +14,20 @@ import java.util.Map;
  */
 public class HalfPlaneCollisionDetector<E> implements HyperbolicCollisionDetector<E> {
 
-	private double collisionDistance = 0.05;
-	private double boxSize = 0.1;
+	private final double collisionDistance;
+	private final double boxSize;
 	private static final double LOG_2 = Math.log(2);
 	private final Map<Box, List<Element>> map = new HashMap<Box, List<Element>>();
 	private final Map<E, Element> index = new HashMap<E, Element>();
+	
+	public HalfPlaneCollisionDetector() {
+		this(0.05);
+	}
+	
+	public HalfPlaneCollisionDetector(double collisionDistance) {
+		this.collisionDistance = collisionDistance;
+		this.boxSize = collisionDistance*2.0;
+	}
 	
 	private static class Box {
 
