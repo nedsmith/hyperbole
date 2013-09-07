@@ -29,14 +29,14 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 	private HyperbolicRigidMotionGenerator motionGenerator = new HalfPlaneMotionGenerator();
 	
 	private RandomNumberGenerator rng = RandomNumberGeneratorFactory.makeDefaultRng();
-	private List<HyperbolicRigidMotion> verticies = new ArrayList<HyperbolicRigidMotion>();
+	private List<Vertex> vertices = new ArrayList<Vertex>();
 	private List<HyperbolicPoly> polySet = new ArrayList<HyperbolicPoly>();
-	private HyperbolicCollisionDetector<Object> collisionDetector = new HalfPlaneCollisionDetector<Object>();
+	private HyperbolicCollisionDetector<Vertex> collisionDetector = new HalfPlaneCollisionDetector<Vertex>(0.2);
 	
 	
 	private final double forwardUnit = 1.1;
 	private final double width = 1.05;
-	private final int iterations = 250;
+	private final int iterations = 300;
 	
 	private final HyperbolicPoint diskCenter = pointGenerator.diskCenter();
 	private final HyperbolicRigidMotion forward = motionGenerator.scalePlane(forwardUnit);
@@ -51,9 +51,24 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 		return motion.transform(diskCenter);
 	}
 	
+	private class Vertex {
+		Vertex parent;
+		HyperbolicRigidMotion position;
+		boolean collided= false;
+		
+		Vertex(HyperbolicRigidMotion position, Vertex parent) {
+			this.position = position;
+			this.parent = parent;
+		}
+		
+		Vertex compose(HyperbolicRigidMotion motion) {
+			return new Vertex(position.composeWith(motion), this);
+		}
+	}
+	
 	@Override
 	public List<HyperbolicPoly> makePolys() {
-		verticies.add(motionGenerator.identity());
+		vertices.add(new Vertex(motionGenerator.identity(), null));
 		for (int i=0; i<iterations; i++) {
 			iterate();
 		}
@@ -61,46 +76,59 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 	}
 	
 	private void iterate() {
-		int numVertices = verticies.size();
+		int numVertices = vertices.size();
 		int i = rng.randomInt(numVertices);
-		expand(verticies.get(i));
+		Vertex vertex = vertices.get(i);
+		expand(vertex);
+		if (vertex.collided) vertices.remove(i);
 	}
 	
-	private void expand(HyperbolicRigidMotion vertex) {
-		if (rng.random()<0.5) advance(vertex);
-		if (rng.random()<0.3) advance(vertex.composeWith(turnLeft));
-		if (rng.random()<0.3) advance(vertex.composeWith(turnRight));
+	private void expand(Vertex vertex) {
+		if (rng.random()<0.3) advance(vertex);
+		if (rng.random()<0.7) advance(vertex.compose(turnLeft));
+		if (rng.random()<0.7) advance(vertex.compose(turnRight));
 	}
 	
-	private void advance(HyperbolicRigidMotion vertex) {
-		HyperbolicRigidMotion position = vertex;
-		int numSteps = rng.randomInt(30);
+	private void advance(Vertex vertex) {
+		int numSteps = rng.randomInt(3)+3;
 		for (int i=0; i<numSteps; i++) {
-			position = takeOneStep(position);
-			if (position==null) return;
+			takeOneStep(vertex);
+			if (vertex.collided) return;
 		}
-		verticies.add(position);
+		vertices.add(vertex);
 	}
 	
-	private HyperbolicRigidMotion takeOneStep(HyperbolicRigidMotion vertex) {
+	private void takeOneStep(Vertex vertex) {
 		HyperbolicPoint[] points = new HyperbolicPoint[4];
-		HyperbolicRigidMotion position = vertex;
+		HyperbolicRigidMotion position = vertex.position;
 		points[0] = point(position.composeWith(stepLeft));
 		points[1] = point(position.composeWith(stepRight));
 		position = position.composeWith(forward);
-		if (isColliding(point(position))) return null;
+		checkCollisions(vertex, point(position));
+		if (vertex.collided) return;
+		vertex.position = position;
 		points[2] = point(position.composeWith(stepRight));
 		points[3] = point(position.composeWith(stepLeft));
 		HyperbolicPoly poly = new HyperbolicPoly(points);
 		polySet.add(poly);
-		return position;
 	}
 	
-	private boolean isColliding(HyperbolicPoint point) {
-		List<Object> collisions = collisionDetector.detectCollisions(point);
-		if (!collisions.isEmpty()) return true;
-		collisionDetector.add(new Object(), point);
-		return false;
+	private void checkCollisions(Vertex vertex, HyperbolicPoint point) {
+		List<Vertex> collisions = collisionDetector.detectCollisions(point);
+		for (Vertex otherVertex : collisions) {
+			if (mayCollide(vertex, otherVertex)) {
+				vertex.collided = true;
+				return;
+			}
+		}
+		collisionDetector.add(vertex, point);
+	}
+	
+	private boolean mayCollide(Vertex v1, Vertex v2) {
+		if (v1.parent==v2) return false;
+		if (v2.parent==v1) return false;
+		if (v1.parent==v2.parent) return false;
+		return true;
 	}
 
 	@Override
