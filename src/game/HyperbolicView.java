@@ -59,7 +59,7 @@ public class HyperbolicView {
 	private HyperbolicLineSet tessellationLines = tessellation.makeLineSet();
 	private HyperbolicPolyDrawing tessellationPolyDrawing;
 	private TerrainGenerator terrainGenerator = new TerrainGenerator();
-	private HyperbolicPolyDrawing terrain = new HyperbolicPolyDrawing(new Color(150,0,150));
+	private HyperbolicPolyDrawing terrain = new HyperbolicPolyDrawing(new Color(100,0,50));
 	
 	public HyperbolicView() {
 		if (gridMode)
