@@ -31,7 +31,7 @@ import display.UniformTessellation;
 public class HyperbolicView {
 	
 
-	private HyperbolicPolyDrawing player = new HyperbolicPolyDrawing(Color.blue);
+	private HyperbolicPolyDrawing player = new HyperbolicPolyDrawing(new Color(80,220,255));
 	private HyperbolicLineDrawing trail = new HyperbolicLineDrawing(Color.red);
 	private HyperbolicPicture picture = new SimpleHyperbolicPicture();
 	
@@ -59,13 +59,13 @@ public class HyperbolicView {
 	private HyperbolicLineSet tessellationLines = tessellation.makeLineSet();
 	private HyperbolicPolyDrawing tessellationPolyDrawing;
 	private TerrainGenerator terrainGenerator = new TerrainGenerator();
-	private HyperbolicPolyDrawing terrain = new HyperbolicPolyDrawing(new Color(100,0,50));
+	private HyperbolicPolyDrawing terrain = new HyperbolicPolyDrawing(new Color(20,100,20));
 	
 	public HyperbolicView() {
 		if (gridMode)
 			picture.addDrawing(new HyperbolicLineDrawing(tessellationLines, Color.green));
 		else {
-			tessellationPolyDrawing = new HyperbolicPolyDrawing(new Color(0,50,0));
+			tessellationPolyDrawing = new HyperbolicPolyDrawing(new Color(0,40,0));
 			picture.addDrawing(tessellationPolyDrawing);
 		}
 		terrain.setPolys(terrainGenerator.makePolys());
