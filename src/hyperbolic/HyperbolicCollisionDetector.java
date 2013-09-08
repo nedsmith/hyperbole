@@ -17,4 +17,5 @@ public interface HyperbolicCollisionDetector<E> {
 	
 	List<E> detectCollisions(HyperbolicPoint point);
 	
+	List<HyperbolicPoint> points();
 }

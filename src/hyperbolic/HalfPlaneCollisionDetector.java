@@ -133,4 +133,15 @@ public class HalfPlaneCollisionDetector<E> implements HyperbolicCollisionDetecto
 		return collisions;
 	}
 
+	@Override
+	public List<HyperbolicPoint> points() {
+		List<HyperbolicPoint> points = new ArrayList<HyperbolicPoint>();
+		for (Map.Entry<Box, List<Element>> entry : map.entrySet()) {
+			for (Element element : entry.getValue()) {
+				points.add(element.position);
+			}
+		}
+		return points;
+	}
+
 }
