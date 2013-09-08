@@ -95,23 +95,26 @@ public class HyperbolicView {
 		HyperbolicRigidMotion goForward = motionGenerator.scalePlane(1.0 + (double)direction * 0.03);
 		
 		HyperbolicPoint currentPosition = positionAndDirection.transform(pointGenerator.diskCenter());
-		positionAndDirection = positionAndDirection.composeWith(goForward);
 		positionAndDirection = positionAndDirection.composeWith(turn);
-		HyperbolicPoint newPosition = positionAndDirection.transform(pointGenerator.diskCenter());
+		HyperbolicRigidMotion newPositionAndDirection = positionAndDirection.composeWith(goForward);
+		HyperbolicPoint newPosition = newPositionAndDirection.transform(pointGenerator.diskCenter());
+		if (!collisionDetector.detectCollisions(newPosition).isEmpty()) {
+			System.out.println("Collision!!");
+		}
+		else {
+			positionAndDirection = newPositionAndDirection;
+			if (direction!=0 && trailOn) {
+				trail.getLineSet().addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
+			}
+		}
+		
 		drawPlayer();
 		
 		if (counter%50==0)
 			System.out.println("Distance: "+currentPosition.distanceFrom(pointGenerator.diskCenter()));
 		
-		if (direction!=0 && trailOn) {
-			trail.getLineSet().addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
-		}
 		if (counter%50==0) {
 			updateTessellation(currentPosition);
-		}
-
-		if (!collisionDetector.detectCollisions(newPosition).isEmpty()) {
-			System.out.println("Collision!!");
 		}
 
 		turns = turns.composeWith(turn);
