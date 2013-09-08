@@ -69,6 +69,9 @@ public class HyperbolicView {
 			picture.addDrawing(tessellationPolyDrawing);
 		}
 		terrain.setPolys(terrainGenerator.makePolys());
+		for (HyperbolicPoint point : terrainGenerator.points()) {
+			collisionDetector.add(new Object(), point);
+		}
 		picture.addDrawing(terrain);
 		picture.addDrawing(trail);
 		picture.addDrawing(player);
@@ -102,7 +105,6 @@ public class HyperbolicView {
 		
 		if (direction!=0 && trailOn) {
 			trail.getLineSet().addLine(new SimpleHyperbolicLine(currentPosition, newPosition));
-			collisionDetector.add(new Object(), currentPosition);
 		}
 		if (counter%50==0) {
 			updateTessellation(currentPosition);

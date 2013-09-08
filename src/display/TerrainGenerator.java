@@ -146,5 +146,9 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 	public List<HyperbolicPoly> makePolysNear(HyperbolicPoint point) {
 		return makePolys();
 	}
+	
+	public List<HyperbolicPoint> points() {
+		return collisionDetector.points();
+	}
 
 }
