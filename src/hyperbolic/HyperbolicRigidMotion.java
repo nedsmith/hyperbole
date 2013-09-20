@@ -16,5 +16,7 @@ public interface HyperbolicRigidMotion {
 	HyperbolicRigidMotion inverse();
 	
 	HyperbolicRigidMotion composeWith(HyperbolicRigidMotion other);
+	
+	HyperbolicPoint intersection();
 
 }

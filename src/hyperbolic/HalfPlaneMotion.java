@@ -76,4 +76,15 @@ public class HalfPlaneMotion implements HyperbolicRigidMotion {
 		return new SimpleHyperbolicLine(newStartPoint, newEndPoint);
 	}
 
+	@Override
+	public HyperbolicPoint intersection() {
+		double denominator = a*c;
+		double numerator = -b*d;
+		if (Math.abs(denominator)<1e-99) return null;
+		double ySquared = numerator / denominator;
+		if (ySquared<0) return null;
+		final double y = Math.sqrt(ySquared);
+		return new HalfPlaneRepresentation(0, y);
+	}
+
 }

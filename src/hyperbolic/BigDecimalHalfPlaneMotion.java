@@ -93,4 +93,9 @@ public class BigDecimalHalfPlaneMotion implements HyperbolicRigidMotion {
 		return new SimpleHyperbolicLine(newStartPoint, newEndPoint);
 	}
 
+	@Override
+	public HyperbolicPoint intersection() {
+		throw new UnsupportedOperationException("Not supported !");
+	}
+
 }
