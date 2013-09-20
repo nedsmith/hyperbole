@@ -39,6 +39,7 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 	private final int iterations = 300;
 	
 	private final HyperbolicPoint diskCenter = pointGenerator.diskCenter();
+	private final HyperbolicRigidMotion identity = motionGenerator.identity();
 	private final HyperbolicRigidMotion forward = motionGenerator.scalePlane(forwardUnit);
 	private final HyperbolicRigidMotion turnLeft = motionGenerator.rotateAboutDiskCenter(-Math.PI / 2.0);
 	private final HyperbolicRigidMotion turnRight = motionGenerator.rotateAboutDiskCenter(Math.PI / 2.0);
@@ -91,11 +92,11 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 		int i = rng.randomInt(numVertices);
 		Vertex vertex = vertices.get(i);
 		expand(vertex);
-		if (vertex.collided) vertices.remove(i);
+//		if (vertex.collided) vertices.remove(i);
 	}
 	
 	private void expand(Vertex vertex) {
-		if (rng.random()<0.3) advance(vertex);
+		if (rng.random()<0.3) advance(vertex.compose(identity));
 		if (rng.random()<0.7) advance(vertex.compose(turnLeft));
 		if (rng.random()<0.7) advance(vertex.compose(turnRight));
 	}
@@ -103,8 +104,8 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 	private void advance(Vertex vertex) {
 		int numSteps = rng.randomInt(5)+4;
 		for (int i=0; i<numSteps; i++) {
-			takeOneStep(vertex);
 			if (vertex.collided) return;
+			takeOneStep(vertex);
 		}
 		vertices.add(vertex);
 	}
@@ -149,6 +150,14 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 	
 	public List<HyperbolicPoint> points() {
 		return collisionDetector.points();
+	}
+	
+	public List<HyperbolicRigidMotion> edges() {
+		List<HyperbolicRigidMotion> edges = new ArrayList<HyperbolicRigidMotion>();
+		for (Vertex vertex : vertices) {
+			edges.add(vertex.position);
+		}
+		return edges;
 	}
 
 }
