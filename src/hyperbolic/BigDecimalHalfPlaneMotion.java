@@ -94,11 +94,6 @@ public class BigDecimalHalfPlaneMotion implements HyperbolicRigidMotion {
 	}
 
 	@Override
-	public HyperbolicPoint intersection() {
-		throw new UnsupportedOperationException("Not supported !");
-	}
-
-	@Override
 	public HyperbolicRigidMotion projection() {
 		throw new UnsupportedOperationException("Not supported !");
 	}
