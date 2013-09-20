@@ -32,14 +32,13 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 	private List<Vertex> vertices = new ArrayList<Vertex>();
 	private List<HyperbolicPoly> polySet = new ArrayList<HyperbolicPoly>();
 	private HyperbolicCollisionDetector<Vertex> collisionDetector = new HalfPlaneCollisionDetector<Vertex>(0.3);
-	
+	private List<HyperbolicRigidMotion> edges = new ArrayList<HyperbolicRigidMotion>();
 	
 	private final double forwardUnit = 1.1;
 	private final double width = 1.05;
 	private final int iterations = 300;
 	
 	private final HyperbolicPoint diskCenter = pointGenerator.diskCenter();
-	private final HyperbolicRigidMotion identity = motionGenerator.identity();
 	private final HyperbolicRigidMotion forward = motionGenerator.scalePlane(forwardUnit);
 	private final HyperbolicRigidMotion turnLeft = motionGenerator.rotateAboutDiskCenter(-Math.PI / 2.0);
 	private final HyperbolicRigidMotion turnRight = motionGenerator.rotateAboutDiskCenter(Math.PI / 2.0);
@@ -92,11 +91,11 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 		int i = rng.randomInt(numVertices);
 		Vertex vertex = vertices.get(i);
 		expand(vertex);
-//		if (vertex.collided) vertices.remove(i);
+		if (vertex.collided) vertices.remove(i);
 	}
 	
 	private void expand(Vertex vertex) {
-		if (rng.random()<0.3) advance(vertex.compose(identity));
+		if (rng.random()<0.3) advance(vertex);
 		if (rng.random()<0.7) advance(vertex.compose(turnLeft));
 		if (rng.random()<0.7) advance(vertex.compose(turnRight));
 	}
@@ -104,8 +103,9 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 	private void advance(Vertex vertex) {
 		int numSteps = rng.randomInt(5)+4;
 		for (int i=0; i<numSteps; i++) {
-			if (vertex.collided) return;
 			takeOneStep(vertex);
+			if (vertex.collided) return;
+			edges.add(vertex.position);
 		}
 		vertices.add(vertex);
 	}
@@ -153,10 +153,6 @@ public class TerrainGenerator implements HyperbolicPolyTessellation {
 	}
 	
 	public List<HyperbolicRigidMotion> edges() {
-		List<HyperbolicRigidMotion> edges = new ArrayList<HyperbolicRigidMotion>();
-		for (Vertex vertex : vertices) {
-			edges.add(vertex.position);
-		}
 		return edges;
 	}
 
