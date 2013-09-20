@@ -87,4 +87,15 @@ public class HalfPlaneMotion implements HyperbolicRigidMotion {
 		return new HalfPlaneRepresentation(0, y);
 	}
 
+	@Override
+	public HyperbolicRigidMotion projection() {
+		double denominator = a*c;
+		double numerator = -b*d;
+		if (Math.abs(denominator)<1e-99) return this;
+		double ySquared = numerator / denominator;
+		if (ySquared<0) return null;
+		final double y = Math.sqrt(ySquared);
+		return new HalfPlaneMotion(y, 0, 0, 1);
+	}
+
 }
