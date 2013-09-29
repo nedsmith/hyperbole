@@ -18,5 +18,7 @@ public interface HyperbolicRigidMotion {
 	HyperbolicRigidMotion composeWith(HyperbolicRigidMotion other);
 		
 	HyperbolicRigidMotion projection();
+	
+	double intersectionAngle();
 
 }

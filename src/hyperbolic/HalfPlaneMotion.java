@@ -87,4 +87,11 @@ public class HalfPlaneMotion implements HyperbolicRigidMotion {
 		return new HalfPlaneMotion(y, 0, 0, 1);
 	}
 
+	@Override
+	public double intersectionAngle() {
+		double x = a*d + b*c;
+		if (Math.abs(x)>1) return 0;
+		return Math.asin(x);
+	}
+
 }

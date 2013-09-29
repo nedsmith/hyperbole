@@ -28,6 +28,12 @@ public class HyperbolicProjectionTest {
 		}
 	}
 	
+	void testEqual(double expected, double actual) {
+		if (Math.abs(expected - actual) > tolerance) {
+			fail("expected "+expected+" but was "+actual);
+		}
+	}
+	
 	/**
 	 * Test that projection of scaling plane is equal to itself
 	 */
@@ -40,6 +46,9 @@ public class HyperbolicProjectionTest {
 		testEqual(transform.getHalfPlanePosition(), 0, 3);
 		transform = projection.transform(pointGenerator.halfPlane(2,4));
 		testEqual(transform.getHalfPlanePosition(), 6, 12);
+		
+		double angle = motion.intersectionAngle();
+		testEqual(0, angle);
 	}
 	
 	/**
@@ -47,13 +56,17 @@ public class HyperbolicProjectionTest {
 	 */
 	@Test
 	public void testRotation() {
-		final HyperbolicRigidMotion motion = motionGenerator.rotateAboutDiskCenter(0.86);
+		double angle = 0.86;
+		final HyperbolicRigidMotion motion = motionGenerator.rotateAboutDiskCenter(angle);
 		final HyperbolicRigidMotion projection = motion.projection();
 		
 		HyperbolicPoint transform = projection.transform(pointGenerator.diskCenter());
 		testEqual(transform.getHalfPlanePosition(), 0, 1);
 		transform = projection.transform(pointGenerator.halfPlane(2,4));
 		testEqual(transform.getHalfPlanePosition(), 2, 4);
+		
+		double intersectionAngle = motion.intersectionAngle();
+		testEqual(Math.PI/2.0-angle, intersectionAngle);
 	}
 	
 	/**
@@ -66,6 +79,9 @@ public class HyperbolicProjectionTest {
 		final HyperbolicRigidMotion motion = turn.composeWith(forward).composeWith(turn.inverse());
 		final HyperbolicRigidMotion projection = motion.projection();
 		assertNull("Projection should be null", projection);
+		
+		double angle = motion.intersectionAngle();
+		testEqual(0, angle);
 	}
 	
 	/**
@@ -82,6 +98,9 @@ public class HyperbolicProjectionTest {
 		testEqual(transform.getHalfPlanePosition(), 0, 1);
 		transform = projection.transform(pointGenerator.halfPlane(2,4));
 		testEqual(transform.getHalfPlanePosition(), 2, 4);
+		
+		double angle = motion.intersectionAngle();
+		testEqual(0, angle);
 	}
 	
 	/**
@@ -98,5 +117,8 @@ public class HyperbolicProjectionTest {
 		testEqual(transform.getHalfPlanePosition(), 0, 2);
 		transform = projection.transform(pointGenerator.halfPlane(2,4));
 		testEqual(transform.getHalfPlanePosition(), 4, 8);
+		
+		double angle = motion.intersectionAngle();
+		testEqual(0, angle);
 	}
 }
