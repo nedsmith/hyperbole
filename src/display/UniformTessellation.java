@@ -15,8 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Draws a simple regular tessellation that fills the plane.
+ * 
  * @author Ned
- *
  */
 public final class UniformTessellation implements HyperbolicTessellation, HyperbolicPolyTessellation {
 

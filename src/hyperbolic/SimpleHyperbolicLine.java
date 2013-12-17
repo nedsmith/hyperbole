@@ -4,8 +4,9 @@
 package hyperbolic;
 
 /**
+ * Obvious implementation of HyperbolicLine, a class with a reference to the start and end points.
+ * 
  * @author Ned
- *
  */
 public final class SimpleHyperbolicLine implements HyperbolicLine {
 

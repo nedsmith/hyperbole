@@ -7,6 +7,13 @@ import org.junit.Test;
 
 import display.Painter;
 
+/**
+ * Simple graphics test for displaying animation in a window (not LWJGL).
+ * 
+ * Running this test should display a pulsating green circle.
+ * 
+ * @author Ned
+ */
 public class DisplayTest {
 	
 	private static class MyPainter implements Painter {

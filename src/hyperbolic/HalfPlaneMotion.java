@@ -10,9 +10,14 @@ package hyperbolic;
 public class HalfPlaneMotion implements HyperbolicRigidMotion {
 
 	/*
+	 * This motion uses the half-plane model viewed as half of the complex plane. For
+	 * a complex number z, this motion has the form:
+	 * 
 	 *         az + b
 	 * z  ->  --------
 	 *         cz + d
+	 *         
+	 * where a, b, c and d are real numbers and ad - bc = 1
 	 */
 	
 	private final double a;

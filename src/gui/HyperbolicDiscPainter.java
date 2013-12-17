@@ -19,8 +19,9 @@ import display.HyperbolicPolyDrawing;
 
 
 /**
+ * Draws lines and polygons on the hyperbolic disc using LWJGL.
+ * 
  * @author Ned
- *
  */
 public class HyperbolicDiscPainter implements GlPainter {
 

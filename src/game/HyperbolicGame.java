@@ -6,6 +6,11 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+/**
+ * Main class for the Hyperbolic Game
+ * 
+ * @author Ned
+ */
 public class HyperbolicGame {
 
 	private HyperbolicDiscPainter painter = new HyperbolicDiscPainter();

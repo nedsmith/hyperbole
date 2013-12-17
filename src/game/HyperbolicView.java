@@ -25,8 +25,10 @@ import display.TerrainGenerator;
 import display.UniformTessellation;
 
 /**
+ * This class contains most of the high-level functionality for the game including
+ * the background, obstacles and movement of the player and camera.
+ * 
  * @author Ned
- *
  */
 public class HyperbolicView {
 	

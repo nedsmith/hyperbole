@@ -19,8 +19,9 @@ import random.RandomNumberGenerator;
 import random.RandomNumberGeneratorFactory;
 
 /**
+ * Class for generating obstacles that the player must navigate around.
+ * 
  * @author Ned
- *
  */
 public class TerrainGenerator implements HyperbolicPolyTessellation {
 

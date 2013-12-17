@@ -13,6 +13,13 @@ import java.awt.Color;
 
 import org.junit.Test;
 
+/**
+ * Does software rendering of the hyperbolic plane without using LWJGL.
+ * 
+ * When this test is run a moving red trail on the hyperbolic plane should be displayed.
+ * 
+ * @author Ned
+ */
 public class HyperbolicDisplayTest {
 	
 	private HyperbolicLineDrawing trail = new HyperbolicLineDrawing(Color.red);
