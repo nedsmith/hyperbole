@@ -1,0 +1,9 @@
+Allows you to navigate the hyperbolic plane
+see http://en.wikipedia.org/wiki/Hyperbolic_geometry
+
+Main class is game.HyperbolicGame
+This project uses the lightweight java game library - see lwjgl.org
+
+Controls:
+A,S,W,D - move
+Space - draw trail
